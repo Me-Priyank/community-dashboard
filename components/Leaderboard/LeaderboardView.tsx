@@ -204,7 +204,7 @@ export default function LeaderboardView({
           <div className="mb-8">
             <div className="flex items-start justify-between mb-4">
               <div>
-                <h1 className="text-4xl font-bold mb-2">
+                <h1 className="text-4xl text-[#50B78B] font-bold mb-2">
                   {periodLabels[period]} Leaderboard
                 </h1>
                 <p className="text-muted-foreground">
@@ -223,7 +223,7 @@ export default function LeaderboardView({
                     placeholder="Search contributors..."
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
-                    className="pl-9 h-9 w-64"
+                    className="pl-9 h-9 w-64 bg-white dark:bg-[#07170f] border border-[#50B78B]/60 dark:border-[#50B78B]/40 shadow-sm dark:shadow-none text-foreground dark:text-foreground focus:border-[#50B78B] focus-visible:ring-2 focus-visible:ring-[#50B78B]/60 focus-visible:ring-offset-1 transition-colors"
                   />
                 </div>
 
@@ -235,15 +235,19 @@ export default function LeaderboardView({
                         variant="ghost"
                         size="sm"
                         onClick={clearFilters}
-                        className="h-9"
+                        className="h-9 hover:bg-[#50B78B]/20 dark:hover:bg-[#50B78B]/20 focus:border-[#50B78B] focus-visible:ring-2 focus-visible:ring-[#50B78B]/40"
                       >
                         <X className="h-4 w-4 mr-1" />
                         Clear
                       </Button>
                     )}
                     <Popover>
-                      <PopoverTrigger asChild>
-                        <Button variant="outline" size="sm" className="h-9">
+                        <PopoverTrigger asChild>
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          className="h-9 border border-[#50B78B]/30 dark:border-[#50B78B]/30 hover:bg-[#50B78B]/20 dark:hover:bg-[#50B78B]/20 focus:border-[#50B78B] focus-visible:ring-2 focus-visible:ring-[#50B78B]/40"
+                        >
                           <Filter className="h-4 w-4 mr-2" />
                           Role
                           {selectedRoles.size > 0 && (
@@ -253,7 +257,7 @@ export default function LeaderboardView({
                           )}
                         </Button>
                       </PopoverTrigger>
-                      <PopoverContent className="w-64" align="end">
+                      <PopoverContent className="w-64 bg-white dark:bg-[#07170f]" align="end">
                         <div className="space-y-4">
                           <h4 className="font-medium text-sm">
                             Filter by Role
@@ -289,40 +293,22 @@ export default function LeaderboardView({
 
           {/* Period Selector */}
           <div className="flex gap-2 mb-8 border-b">
-            <Link
-              href="/leaderboard/week"
-              className={cn(
-                "px-4 py-2 font-medium transition-colors border-b-2",
-                period === "week"
-                  ? "border-[#50B78B] text-[#50B78B]"
-                  : "border-transparent text-muted-foreground hover:text-[#50B78B]"
-              )}
-            >
-              Week
-            </Link>
-            <Link
-              href="/leaderboard/month"
-              className={cn(
-                "px-4 py-2 font-medium transition-colors border-b-2",
-                period === "month"
-                  ? "border-[#50B78B] text-[#50B78B]"
-                  : "border-transparent text-muted-foreground hover:text-[#50B78B]"
-              )}
-            >
-              Month
-            </Link>
-            <Link
-              href="/leaderboard/year"
-              className={cn(
-                "px-4 py-2 font-medium transition-colors border-b-2",
-                period === "year"
-                  ? "border-[#50B78B] text-[#50B78B]"
-                  : "border-transparent text-muted-foreground hover:text-[#50B78B]"
-              )}
-            >
-              Year
-            </Link>
+            {(['week', 'month', 'year'] as const).map((p) => (
+                <Link
+                  key={p}
+                  href={`/leaderboard/${p}`}
+                  className={cn(
+                    "px-4 py-2 font-medium transition-colors border-b-2 relative",
+                    period === p
+                      ? "border-[#50B78B] text-[#50B78B] bg-gradient-to-t from-[#50B78B]/12 to-transparent dark:from-[#50B78B]/12"
+                      : "border-transparent text-muted-foreground hover:text-[#50B78B]"
+                  )}
+                >
+                  {periodLabels[p]}
+                </Link>
+            ))}
           </div>
+
 
           {/* Leaderboard */}
           {filteredEntries.length === 0 ? (
@@ -458,7 +444,7 @@ export default function LeaderboardView({
                   ([activityName, contributors]) => (
                     <Card key={activityName} className="overflow-hidden p-0">
                       <CardContent className="p-0">
-                        <div className="bg-muted/50 px-4 py-2.5 border-b">
+                        <div className="bg-[#50B78B]/8 dark:bg-[#50B78B]/12 px-4 py-2.5 border-b">
                           <h3 className="font-semibold text-sm text-foreground">
                             {activityName}
                           </h3>
