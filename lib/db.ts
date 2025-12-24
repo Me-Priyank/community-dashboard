@@ -94,20 +94,40 @@ export async function getRecentActivitiesGroupedByType(
   const file = fs.readFileSync(filePath, "utf-8");
   const data = JSON.parse(file);
 
+  if (!data?.entries?.length) return [];
+
   const groups = new Map<string, ActivityGroup>();
 
-  for (const activity of data.activities ?? []) {
-    if (!groups.has(activity.type)) {
-      groups.set(activity.type, {
-        activity_definition: activity.type,
-        activity_name: activity.type,
+ for (const user of data.entries) {
+  if (!user.activities) continue;
+
+  for (const act of user.activities) {
+    const type = act.type;
+
+    if (!groups.has(type)) {
+      groups.set(type, {
+        activity_definition: type,
+        activity_name: type,
         activity_description: null,
         activities: [],
       });
     }
 
-    groups.get(activity.type)!.activities.push(activity);
+    groups.get(type)!.activities.push({
+      slug: `${user.username}-${type}-${act.occured_at}-${groups.get(type)!.activities.length}`,
+      contributor: user.username,
+      contributor_name: user.name,
+      contributor_avatar_url: user.avatar_url,
+      contributor_role: user.role ?? null,
+      occured_at: act.occured_at,
+      closed_at: act.occured_at,
+      title: act.title ?? null,     // ✅ REAL title
+      link: act.link ?? null,       // ✅ REAL GitHub link
+      points: act.points ?? 0,
+    });
   }
+}
+
 
   // newest first
   for (const group of groups.values()) {
@@ -120,6 +140,7 @@ export async function getRecentActivitiesGroupedByType(
 
   return [...groups.values()];
 }
+
 
 
 // (Optional) stubs for other imports; add as you see “module not found” errors:
